@@ -28,22 +28,6 @@ if not api_key:
 genai.configure(api_key=api_key)
 
 
-# Safe check for API Key to prevent StreamlitSecretNotFoundError
-api_key = os.getenv("GOOGLE_API_KEY")
-
-if not api_key:
-    try:
-        # This will only run if st.secrets exists (like on Streamlit Cloud)
-        api_key = st.secrets["GOOGLE_API_KEY"]
-    except Exception:
-        api_key = None
-
-if not api_key:
-    st.error("⚠️ API Key not found. Please ensure it's in your .env file locally or Streamlit Secrets on Cloud.")
-    st.stop()
-
-# Configure Gemini 2.5 Flash
-genai.configure(api_key=api_key)
 
 # Define model settings
 generation_config = {
@@ -78,11 +62,11 @@ st.title("RecepieMaster: AI-Powered Blog Generation")
 st.write("🤖 Hello! I'm recepieMaster, your friendly robot. Let’s create a fantastic recepie together!") 
 
 # User Inputs
-topic = st.text_input("Topic", placeholder="e.g., malai kofta")
+topic = st.text_input("🍴 Recipe Topic", placeholder="e.g., Vegan Chocolate Cake, Quick Weeknight Dinners...")
 word_count = st.number_input("Number of words", min_value=100, max_value=2000, value=555)
 
 # --- 4. Recipe Generation Logic ---
-if st.button("Generate recepie"):
+if st.button("✨ Generate Recipe Blog"):
     if topic:
         with st.status("Generating your recepie...", expanded=True) as status:
             st.write(f"⌛ While I work, here’s a joke: **{get_joke()}**")
@@ -92,7 +76,7 @@ if st.button("Generate recepie"):
             try:
                 response = model.generate_content(prompt)
                 recipe_text = response.text
-                status.update(label="🎉 Your recepie is ready!", state="complete", expanded=False)
+                status.update(label="🎉 Your recipe blog is ready!", state="complete", expanded=False)
                 
                 st.markdown(recipe_text)
                 st.divider()
